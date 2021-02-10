@@ -61,7 +61,7 @@ private:
         "grass",
         "road-grass",
         "road-water",
-        "block",
+        "block"
     };
 
     std::string activeElement;
