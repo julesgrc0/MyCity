@@ -82,7 +82,7 @@ void Window::UserAction()
     std::pair<int, int> pos = {20, y + 10};
 
     this->getTexture("road-grass", &btn);
-    this->UserButton(btn, pos, "road");
+    this->UserButton(btn, pos, "road-grass");
 
     pos = {60, y + 10};
     this->getTexture("block", &btn);
