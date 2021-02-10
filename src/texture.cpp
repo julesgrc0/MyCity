@@ -51,7 +51,6 @@ bool Texture::LoadTexture(std::string path)
                 }
                 index++;    
             }
-            
         }
         texture.close();
         return true;
