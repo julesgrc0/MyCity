@@ -33,10 +33,9 @@ Window::Window(std::string name, int width, int height)
     this->Loop();
 }
 
-/*-------Events--------*/
-
 void Window::Init()
 {
+    this->activeElement = "grass";
     this->LoadRessources();
     for (int y = 0; y < this->h / this->BOX_SIZE; y++)
     {
@@ -50,7 +49,7 @@ void Window::Init()
     {
         Coord pos = item.getCoord();
         int box[100][4];
-        item.drawBox(&box);
+        item.getBox(&box);
 
         int c = 0;
         for (int i = 0; i < 10; i++)
@@ -81,7 +80,7 @@ void Window::UserAction()
 
     int btn[100][4];
     std::pair<int, int> pos = {20, y + 10};
-    
+
     this->getTexture("road-grass", &btn);
     this->UserButton(btn, pos, "road");
 
@@ -124,7 +123,7 @@ void Window::UserButton(int texture[100][4], std::pair<int, int> pos, std::strin
         {
             for (int j = 0; j < 10; j++)
             {
-                this->SetPixel(pos.first + 3 + i, pos.second + 3 + j, texture[c][0], texture[c][1], texture[c][2], texture[c][3]);
+                this->SetPixel(pos.first + 3 + i, pos.second + 3 + j, texture[c][3], texture[c][2], texture[c][1], texture[c][0]);
                 c++;
             }
         }
@@ -173,10 +172,11 @@ void Window::RegisterTexture(std::string id)
     for (int i = 0; i < 100; ++i)
     {
         a[i] = new int[4];
-        for (int j = 0; j < 4; j++)
-        {
-            a[i][j] = b[i][j];
-        }
+
+        a[i][0] = b[i][3];
+        a[i][1] = b[i][2];
+        a[i][2] = b[i][1];
+        a[i][3] = b[i][0];
     }
     std::pair<std::string, int **> reg = {id, a};
     this->textures.push_back(reg);
@@ -199,7 +199,7 @@ void Window::Mouse_Down(int x, int y)
             std::pair<int, int> btn = it.first;
             if (x >= btn.first && x <= btn.first + this->BUTTON_SIZE && y >= btn.second && y <= btn.second + this->BUTTON_SIZE)
             {
-                std::cout << "clicked: " << it.second << std::endl;
+                this->activeElement = it.second;
             }
         }
     }
@@ -266,8 +266,6 @@ void Window::Keyup(SDL_Keycode code)
 {
 }
 
-/*-------Game--------*/
-
 void Window::Main()
 {
     int Cursor_x = (cursor.x / this->BOX_SIZE) * this->BOX_SIZE, Cursor_y = (cursor.y / this->BOX_SIZE) * this->BOX_SIZE;
@@ -280,8 +278,16 @@ void Window::Main()
 
         if (pos.x == Cursor_x && pos.y == Cursor_y)
         {
+            if(this->mouseActive)
+            {
+                int b[100][4];
+                this->getTexture(this->activeElement, &b);
+                item.setBox(b);
+            }
+
             if (!item.isSelected())
             {
+
                 item.selectBox();
                 this->DrawCase(item);
             }
@@ -346,8 +352,6 @@ void Window::Loop()
     exit(0);
 }
 
-/*-------Utils--------*/
-
 void Window::SetPixel(int x, int y, int r, int g, int b, int a)
 {
     this->color(r, g, b, a);
@@ -379,7 +383,7 @@ void Window::DrawCase(Box item)
 {
     Coord pos = item.getCoord();
     int box[100][4];
-    item.drawBox(&box);
+    item.getBox(&box);
 
     int c = 0;
     for (int i = 0; i < 10; i++)

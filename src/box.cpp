@@ -38,13 +38,25 @@ bool Box::isSelected()
     return this->selected;
 }
 
-void Box::drawBox(int (*box)[100][4])
+void Box::getBox(int (*box)[100][4])
 {
     for (int i = 0; i < this->width * this->height; i++)
     {
         for (int j = 0; j < 4; j++)
         {
             (*box)[i][j] = this->colors[i][j];
+        }
+    }
+}
+
+void Box::setBox(int box[100][4])
+{
+    for (int i = 0; i < this->width * this->height; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            this->backUp[i][j] = box[i][j];
+            this->colors[i][j] = box[i][j];
         }
     }
 }

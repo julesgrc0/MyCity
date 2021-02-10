@@ -57,6 +57,7 @@ private:
     std::vector<std::pair<std::pair<int, int>, std::string>> buttons;
     std::vector<std::pair<std::string, int **>> textures;
 
+    std::string activeElement;
     bool run;
     int w, h;
     bool mouseActive = false;

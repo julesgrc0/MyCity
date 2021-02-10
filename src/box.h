@@ -20,6 +20,7 @@ struct Coord{
 enum BoxTypes
 {
     WATER,
+    ROAD_WATER,
     ROAD,
     GRASS,
     BUILD,
@@ -42,7 +43,9 @@ public:
     void selectBox();
     void deselectBox();
 
-    void drawBox(int (*box)[100][4]);
+    void getBox(int (*box)[100][4]);
+    void setBox(int box[100][4]);
+
     struct Size getBoxBounds();
     struct Coord getCoord();
 
