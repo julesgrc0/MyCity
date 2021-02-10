@@ -238,6 +238,10 @@ void Window::Keydown(SDL_Keycode code)
     case SDLK_DOWN:
         y += 10;
         break;
+    case SDLK_SPACE:
+        this->Mouse_Down(x,y);
+        this->mouseActive = false;
+        break;
     }
 
     if (x != this->cursor.x || y != this->cursor.y)
@@ -275,11 +279,12 @@ void Window::Main()
                 int b[100][4];
                 this->getTexture(this->activeElement, &b);
                 item.setBox(b);
+                item.selectBox();
+                this->DrawCase(item);
             }
 
             if (!item.isSelected())
             {
-
                 item.selectBox();
                 this->DrawCase(item);
             }
