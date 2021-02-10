@@ -56,6 +56,13 @@ private:
     std::vector<Box> cases;
     std::vector<std::pair<std::pair<int, int>, std::string>> buttons;
     std::vector<std::pair<std::string, int **>> textures;
+    std::vector<std::string> TextureLoadList = 
+    {
+        "grass",
+        "road-grass",
+        "road-water",
+        "block",
+    };
 
     std::string activeElement;
     bool run;

@@ -78,19 +78,18 @@ void Window::UserAction()
     this->color(107, 107, 107, SDL_ALPHA_OPAQUE);
     SDL_RenderDrawLine(this->render, 0, y + 1, this->w, y + 1);
 
+    int x = 20;
     int btn[100][4];
-    std::pair<int, int> pos = {20, y + 10};
+    std::pair<int, int> pos;
 
-    this->getTexture("road-grass", &btn);
-    this->UserButton(btn, pos, "road-grass");
+    for (std::string text : this->TextureLoadList)
+    {
+        x += this->BUTTON_SIZE*2;
+        pos = {x, y + 10};
 
-    pos = {60, y + 10};
-    this->getTexture("block", &btn);
-    this->UserButton(btn, pos, "block");
-
-    pos = {100, y + 10};
-    this->getTexture("grass", &btn);
-    this->UserButton(btn, pos, "grass");
+        this->getTexture(text, &btn);
+        this->UserButton(btn, pos, text);
+    }
 }
 
 void Window::UserButton(int texture[100][4], std::pair<int, int> pos, std::string id)
@@ -132,14 +131,7 @@ void Window::UserButton(int texture[100][4], std::pair<int, int> pos, std::strin
 
 void Window::LoadRessources()
 {
-    std::vector<std::string> loads = {
-        "grass",
-        "road-grass",
-        "road-water",
-        "block",
-    };
-
-    for (std::string id : loads)
+    for (std::string id : this->TextureLoadList)
     {
         this->RegisterTexture(id);
     }
@@ -278,7 +270,7 @@ void Window::Main()
 
         if (pos.x == Cursor_x && pos.y == Cursor_y)
         {
-            if(this->mouseActive)
+            if (this->mouseActive)
             {
                 int b[100][4];
                 this->getTexture(this->activeElement, &b);
