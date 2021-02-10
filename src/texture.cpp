@@ -49,9 +49,9 @@ bool Texture::LoadTexture(std::string path)
                         this->box[index][i] = std::atoi(values[i].c_str());
                     }
                 }
-                    
-                index++;
+                index++;    
             }
+            
         }
         texture.close();
         return true;
