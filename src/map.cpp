@@ -74,3 +74,18 @@ bool Map::CreateFolder(std::string name)
     }
     return false;
 }
+
+
+void Map::setMap(std::vector<Box> cases)
+{
+    this->cases.clear();
+    for (int i = 0; i < (int)cases.size(); i++)
+    {
+        this->cases.push_back(cases[i]);
+    }
+}
+
+std::vector<Box> getMap()()
+{
+    return this->cases;
+}
