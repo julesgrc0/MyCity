@@ -85,7 +85,7 @@ void Map::setMap(std::vector<Box> cases)
     }
 }
 
-std::vector<Box> getMap()()
+std::vector<Box> Map::getMap()
 {
     return this->cases;
 }
