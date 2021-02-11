@@ -1,6 +1,8 @@
 include/
 lib/
 share/
-!.vscode/
 temp/
+.vscode/*
+!.vscode/settings.json
+
 upload.bat
