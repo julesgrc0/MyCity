@@ -17,7 +17,7 @@ struct Cursor
 class Window
 {
 public:
-    Window(std::string, int, int);
+    Window(std::string, int, int, std::string);
     ~Window();
 
     void Init();
@@ -64,6 +64,7 @@ private:
             "block"};
 
     std::string activeElement;
+    std::string import;
     bool run;
     int w, h;
     bool mouseActive = false;

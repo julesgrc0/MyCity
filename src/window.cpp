@@ -8,8 +8,9 @@
 #include "window.h"
 #include "map.h"
 
-Window::Window(std::string name, int width, int height)
+Window::Window(std::string name, int width, int height, std::string import)
 {
+    this->import = import;
     this->w = width;
     this->h = height - 50;
     this->run = true;
@@ -38,14 +39,29 @@ void Window::Init()
 {
     this->activeElement = "grass";
     this->LoadRessources();
-    for (int y = 0; y < this->h / this->BOX_SIZE; y++)
+
+    if (this->import != "")
     {
-        for (int x = 0; x < this->w / this->BOX_SIZE; x++)
+        Map imp = Map(this->cases);
+        std::vector<Box> boxs = imp.importMap(this->import);
+        this->cases.clear();
+        for (Box it : boxs)
         {
-            Box b = Box(BLOCK, x * this->BOX_SIZE, y * this->BOX_SIZE);
-            this->cases.push_back(b);
+            this->cases.push_back(it);
         }
     }
+    else
+    {
+        for (int y = 0; y < this->h / this->BOX_SIZE; y++)
+        {
+            for (int x = 0; x < this->w / this->BOX_SIZE; x++)
+            {
+                Box b = Box(BLOCK, x * this->BOX_SIZE, y * this->BOX_SIZE);
+                this->cases.push_back(b);
+            }
+        }
+    }
+
     for (Box item : this->cases)
     {
         Coord pos = item.getCoord();
@@ -62,6 +78,7 @@ void Window::Init()
             }
         }
     }
+
     this->UserAction();
     this->prensent();
 }
@@ -177,10 +194,6 @@ void Window::RegisterTexture(std::string id)
 
 void Window::Mouse_Move(int x, int y)
 {
-    if (this->mouseActive)
-    {
-        this->cursor = {x, y};
-    }
 }
 
 void Window::Mouse_Down(int x, int y)
@@ -206,8 +219,11 @@ void Window::Mouse_Down(int x, int y)
 
 void Window::Mouse_Up(int x, int y)
 {
-    this->mouseActive = false;
-    this->cursor = {x, y};
+    if (!(y > this->h))
+    {
+        this->mouseActive = false;
+        this->cursor = {x, y};
+    }
 }
 
 void Window::Mouse_Wheel(int wheel)
@@ -224,38 +240,48 @@ void Window::Keydown(SDL_Keycode code)
 {
     int x = this->cursor.x;
     int y = this->cursor.y;
-    
-    switch (code)
-    {
-    case SDLK_LEFT:
-        x -= 10;
-        break;
-    case SDLK_RIGHT:
-        x += 10;
-        break;
-    case SDLK_UP:
-        y -= 10;
-        break;
-    case SDLK_DOWN:
-        y += 10;
-        break;
-    case SDLK_SPACE:
-        this->Mouse_Down(x, y);
-        this->mouseActive = false;
-        break;
-    }
 
-    if (x != this->cursor.x || y != this->cursor.y)
+    if (code == SDLK_p)
     {
-        if (x < this->w && x >= 0)
-        {
-            this->cursor.x = x;
-        }
-        if (y < this->h && y >= 0)
-        {
-            this->cursor.y = y;
-        }
+        Map p = Map(this->cases);
+        p.exportMap("MyCity");
+    }
+    else if (code == SDLK_SPACE)
+    {
+        this->Mouse_Down(x, y);
+        this->Mouse_Up(x,y);
         this->Main();
+    }
+    else
+    {
+        switch (code)
+        {
+        case SDLK_LEFT:
+            x -= 10;
+            break;
+        case SDLK_RIGHT:
+            x += 10;
+            break;
+        case SDLK_UP:
+            y -= 10;
+            break;
+        case SDLK_DOWN:
+            y += 10;
+            break;
+        }
+
+        if (x != this->cursor.x || y != this->cursor.y)
+        {
+            if (x < this->w && x >= 0)
+            {
+                this->cursor.x=x;
+            }
+            if (y < this->h && y >= 0)
+            {
+                this->cursor.y=y;
+            }
+            this->Main();
+        }
     }
 }
 
@@ -265,23 +291,22 @@ void Window::Keyup(SDL_Keycode code)
 
 void Window::Main()
 {
-    int Cursor_x = (cursor.x / this->BOX_SIZE) * this->BOX_SIZE, Cursor_y = (cursor.y / this->BOX_SIZE) * this->BOX_SIZE;
-
     std::vector<Box> temp = {};
+    bool selected = false;
     for (unsigned long i = 0; i < this->cases.size(); i++)
     {
         Box item = this->cases[i];
         Coord pos = item.getCoord();
 
-        if (pos.x == Cursor_x && pos.y == Cursor_y)
+        if (pos.x == this->cursor.x && pos.y == this->cursor.y)
         {
+            selected = true;
             if (this->mouseActive)
             {
                 int b[100][4];
                 this->getTexture(this->activeElement, &b);
+                item.deselectBox();
                 item.setBox(b);
-                item.selectBox();
-                this->DrawCase(item);
             }
 
             if (!item.isSelected())
@@ -300,6 +325,7 @@ void Window::Main()
         }
         temp.push_back(item);
     }
+
     this->cases.clear();
     for (Box it : temp)
     {
@@ -316,6 +342,9 @@ void Window::Loop()
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
+            int x = (event.button.x / this->BOX_SIZE) * this->BOX_SIZE;
+            int y = (event.button.y / this->BOX_SIZE) * this->BOX_SIZE;
+
             switch (event.type)
             {
             case SDL_QUIT:
@@ -325,13 +354,13 @@ void Window::Loop()
                 this->Mouse_Wheel(event.button.x);
                 break;
             case SDL_MOUSEMOTION:
-                this->Mouse_Move(event.button.x, event.button.y);
+                this->Mouse_Move(x, y);
                 break;
             case SDL_MOUSEBUTTONDOWN:
-                this->Mouse_Down(event.button.x, event.button.y);
+                this->Mouse_Down(x, y);
                 break;
             case SDL_MOUSEBUTTONUP:
-                this->Mouse_Up(event.button.x, event.button.y);
+                this->Mouse_Up(x, y);
                 break;
             case SDL_KEYDOWN:
                 this->Keydown(event.key.keysym.sym);

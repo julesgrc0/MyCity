@@ -3,6 +3,9 @@
 #include <fstream>
 #include <string>
 #include <unistd.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include "util.h"
 #include "map.h"
 #include "box.h"
 
@@ -52,6 +55,81 @@ bool Map::exportMap(std::string name)
 
 std::vector<Box> Map::importMap(std::string name)
 {
+    this->cases.clear();
+    DIR *dirp = opendir(name.c_str());
+    struct dirent *dp;
+    std::vector<std::string> fileList;
+
+    while ((dp = readdir(dirp)) != NULL)
+    {
+        std::vector<std::string> el;
+
+        split(std::string(dp->d_name), el, '.');
+        if (el.size() >= 2 && el[1] == "box")
+        {
+            fileList.push_back(el[0]);
+        }
+    }
+
+    for (std::string file : fileList)
+    {
+
+        std::ifstream it(name+"/"+file+".box");
+
+        if (it.is_open())
+        {
+            int box[100][4];
+            for (int i = 0; i < 100; i++)
+            {
+                box[i][2] = 83;
+                box[i][3] = 59;
+                box[i][1] = 237;
+                box[i][0] = 255;
+            }
+
+            std::string line = "";
+            int index = 0;
+            while (getline(it, line))
+            {
+                if (index < 100)
+                {
+                    std::vector<std::string> values;
+                    split(line, values, ' ');
+                    if ((int)values.size() > 4)
+                    {
+                        for (int i = 0; i < 4; i++)
+                        {
+                            box[index][i] = std::atoi(values[i].c_str());
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < (int)values.size(); i++)
+                        {
+                            box[index][i] = std::atoi(values[i].c_str());
+                        }
+                    }
+                    index++;
+                }
+            }
+
+            std::vector<std::string> coord;
+            split(file, coord, '-');
+            int x = 0;
+            int y = 0;
+
+            if (coord.size() >= 2)
+            {
+                x = std::atoi(coord[0].c_str());
+                y = std::atoi(coord[1].c_str());
+            }
+            Box b = Box(BLOCK, x, y);
+            b.setBox(box);
+            this->cases.push_back(b);
+            it.close();
+        }
+    }
+
     return this->cases;
 }
 
@@ -74,7 +152,6 @@ bool Map::CreateFolder(std::string name)
     }
     return false;
 }
-
 
 void Map::setMap(std::vector<Box> cases)
 {

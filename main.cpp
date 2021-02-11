@@ -6,6 +6,12 @@
 
 int main(int argc, char **argv)
 {
-    Window win = Window("MyCity",800,500);
+    std::string import = "";
+    if (argc >= 2)
+    {
+        import = std::string(argv[1]);
+    }
+
+    Window win = Window("MyCity", 800, 500, import);
     return 0;
 }

@@ -56,12 +56,26 @@
         "xlocbuf": "cpp",
         "xlocmes": "cpp",
         "xlocmon": "cpp",
-        "xloctime": "cpp"
+        "xloctime": "cpp",
+        "array": "cpp",
+        "clocale": "cpp",
+        "codecvt": "cpp",
+        "cstdarg": "cpp",
+        "cwctype": "cpp",
+        "deque": "cpp",
+        "unordered_map": "cpp",
+        "functional": "cpp",
+        "numeric": "cpp",
+        "queue": "cpp",
+        "random": "cpp",
+        "sstream": "cpp",
+        "xhash": "cpp",
+        "*.tcc": "cpp"
     },
-    "C_Cpp.default.includePath": [
-        "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.28.29333/include/",
-        "C:/Win-builds/x86_64/include",
-        "${workspaceFolder}/temp"
-    ],
+    // "C_Cpp.default.includePath": [
+    //     "C:/Win-builds/x86_64/include",
+    //     "${workspaceFolder}/temp",
+    //     "${workspaceFolder}/include"
+    // ],
     // "C_Cpp.errorSquiggles": "Disabled"
 }
