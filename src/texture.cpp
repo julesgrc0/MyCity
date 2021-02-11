@@ -9,7 +9,7 @@ Texture::Texture(std::string path)
     this->LoadTexture(path);
 }
 
-Texture::Texture(){}
+Texture::Texture() {}
 
 void Texture::getTexture(int (*box)[100][4])
 {
@@ -43,13 +43,15 @@ bool Texture::LoadTexture(std::string path)
                     {
                         this->box[index][i] = std::atoi(values[i].c_str());
                     }
-                }else{
+                }
+                else
+                {
                     for (int i = 0; i < (int)values.size(); i++)
                     {
                         this->box[index][i] = std::atoi(values[i].c_str());
                     }
                 }
-                index++;    
+                index++;
             }
         }
         texture.close();

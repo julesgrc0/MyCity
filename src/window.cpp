@@ -84,7 +84,7 @@ void Window::UserAction()
 
     for (std::string text : this->TextureLoadList)
     {
-        x += this->BUTTON_SIZE*2;
+        x += this->BUTTON_SIZE * 2;
         pos = {x, y + 10};
 
         this->getTexture(text, &btn);
@@ -239,7 +239,7 @@ void Window::Keydown(SDL_Keycode code)
         y += 10;
         break;
     case SDLK_SPACE:
-        this->Mouse_Down(x,y);
+        this->Mouse_Down(x, y);
         this->mouseActive = false;
         break;
     }

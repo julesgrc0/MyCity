@@ -13,8 +13,9 @@ struct Rgba
     int r, g, b, a;
 };
 
-struct Coord{
-    int x,y;
+struct Coord
+{
+    int x, y;
 };
 
 enum BoxTypes
@@ -32,7 +33,7 @@ enum BoxTypes
 class Box
 {
 public:
-    Box(enum BoxTypes type,int x,int y);
+    Box(enum BoxTypes type, int x, int y);
     void setPixel(int index, struct Rgba color);
     Rgba getPixel(int index);
 
@@ -58,6 +59,5 @@ private:
     const int height = 10;
     const int width = 10;
 };
-
 
 #endif // !_BOX_
