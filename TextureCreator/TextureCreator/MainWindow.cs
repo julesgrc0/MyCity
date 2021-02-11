@@ -8,7 +8,7 @@ namespace TextureCreator
 {
     public partial class MainWindow : Form
     {
-        private new List<Rgba> matrix = new List<Rgba>();
+        private List<Rgba> matrix = new List<Rgba>();
         private Color colorDefault;
         private ColorDialog color = new ColorDialog();
         private Color actualBtn;
@@ -95,7 +95,7 @@ namespace TextureCreator
         private void Btn_MouseHover(object sender, EventArgs e)
         {
             Button btn = (Button)sender;
-            this.Text = string.Format("TextureCreator - {0}, {1}, {2}", btn.BackColor.R, btn.BackColor.G, btn.BackColor.B);
+            this.Text = string.Format("TextureCreator - {0}, {1}, {2}", actualBtn.R, actualBtn.G, actualBtn.B);
         }
 
         private void Btn_MouseLeave(object sender, EventArgs e)

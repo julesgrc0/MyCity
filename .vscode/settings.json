@@ -46,6 +46,20 @@
         "xtr1common": "cpp",
         "cctype": "cpp",
         "string": "cpp",
-        "fstream": "cpp"
-    }
+        "fstream": "cpp",
+        "algorithm": "cpp",
+        "ctime": "cpp",
+        "filesystem": "cpp",
+        "iomanip": "cpp",
+        "list": "cpp",
+        "locale": "cpp",
+        "xlocbuf": "cpp",
+        "xlocmes": "cpp",
+        "xlocmon": "cpp",
+        "xloctime": "cpp"
+    },
+    "C_Cpp.default.includePath": [
+        "../include/"
+    ],
+    "C_Cpp.errorSquiggles": "Disabled"
 }

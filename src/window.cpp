@@ -6,6 +6,7 @@
 #include "texture.h"
 #include "box.h"
 #include "window.h"
+#include "map.h"
 
 Window::Window(std::string name, int width, int height)
 {
@@ -223,7 +224,7 @@ void Window::Keydown(SDL_Keycode code)
 {
     int x = this->cursor.x;
     int y = this->cursor.y;
-
+    
     switch (code)
     {
     case SDLK_LEFT:
