@@ -1,6 +1,6 @@
-/include
-/lib
-/share
-/.vscode
-/temp
+include/
+lib/
+share/
+.vscode/
+temp/
 upload.bat
