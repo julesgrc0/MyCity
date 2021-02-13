@@ -59,10 +59,8 @@ private:
     std::vector<std::string> TextureLoadList =
         {
             "grass",
-            "road-grass",
             "road-grass-lr",
             "road-grass-ud",
-            "road-water",
             "block",
             "water"
         };

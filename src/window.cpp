@@ -58,7 +58,7 @@ void Window::Init()
             {
                 Box b = Box(this->activeElement, x * this->BOX_SIZE, y * this->BOX_SIZE);
                 int box[100][4];
-                this->getTexture(this->activeElement,&box);
+                this->getTexture(this->activeElement, &box);
                 b.setBox(box);
                 b.setType(this->activeElement);
                 this->cases.push_back(b);
@@ -206,10 +206,16 @@ void Window::Mouse_Down(int x, int y)
     {
         for (std::pair<std::pair<int, int>, std::string> it : this->buttons)
         {
-            std::pair<int, int> btn = it.first;
-            if (x >= btn.first && x <= btn.first + this->BUTTON_SIZE && y >= btn.second && y <= btn.second + this->BUTTON_SIZE)
+            std::pair<int, int> btn = {
+                (it.first.first / this->BOX_SIZE) * this->BOX_SIZE,
+                (it.first.second / this->BOX_SIZE) * this->BOX_SIZE};
+
+            if (btn.first <= x && btn.first + this->BUTTON_SIZE >= x && btn.second <= y && btn.second + this->BUTTON_SIZE >= y)
             {
-                this->activeElement = it.second;
+                if (this->activeElement != it.second)
+                {
+                    this->activeElement = it.second;
+                }
             }
         }
     }
@@ -248,13 +254,13 @@ void Window::Keydown(SDL_Keycode code)
     if (code == SDLK_p)
     {
         int last = 0;
-        int i=0;
-        for(Box b : this->cases)
+        int i = 0;
+        for (Box b : this->cases)
         {
-            if(b.isSelected())
+            if (b.isSelected())
             {
                 b.deselectBox();
-                last=i;
+                last = i;
             }
             i++;
         }
@@ -264,7 +270,7 @@ void Window::Keydown(SDL_Keycode code)
     else if (code == SDLK_SPACE)
     {
         this->Mouse_Down(x, y);
-        this->Mouse_Up(x,y);
+        this->Mouse_Up(x, y);
         this->Main();
     }
     else
@@ -289,11 +295,11 @@ void Window::Keydown(SDL_Keycode code)
         {
             if (x < this->w && x >= 0)
             {
-                this->cursor.x=x;
+                this->cursor.x = x;
             }
             if (y < this->h && y >= 0)
             {
-                this->cursor.y=y;
+                this->cursor.y = y;
             }
             this->Main();
         }
@@ -315,7 +321,7 @@ void Window::Main()
 
         if (pos.x == this->cursor.x && pos.y == this->cursor.y)
         {
-            if (this->mouseActive)
+            if (this->mouseActive && item.getType() != this->activeElement)
             {
                 int b[100][4];
                 this->getTexture(this->activeElement, &b);
