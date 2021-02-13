@@ -28,6 +28,7 @@ namespace TextureCreator
         public MainWindow()
         {
             InitializeComponent();
+            this.FormBorderStyle = FormBorderStyle.Fixed3D;
             this.SetupButtons(Col, Row);
             this.SetupMatrix();
         }
@@ -169,12 +170,18 @@ namespace TextureCreator
         private void ExportTexture(object sender, EventArgs e)
         {
             string Result = "";
-            foreach (Rgba c in this.matrix)
+            int index = 0;
+            for (int i = 0; i < Row; i++)
             {
-                Result += string.Format("{0} {1} {2} {3}\n", c.r, c.g, c.b, c.a);
+                for (int j = 0; j < Col; j++)
+                {
+                    Rgba c = matrix[index];
+                    Result += string.Format("{0} {1} {2} {3}\n", c.r, c.g, c.b, c.a);
+                    index++;
+                }
             }
 
-            SaveFileDialog save = new SaveFileDialog();
+                    SaveFileDialog save = new SaveFileDialog();
 
             save.Title = "Export Box Texture";
             save.FileName = "texture";

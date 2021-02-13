@@ -292,7 +292,7 @@ void Window::Keyup(SDL_Keycode code)
 void Window::Main()
 {
     std::vector<Box> temp = {};
-    bool selected = false;
+
     for (unsigned long i = 0; i < this->cases.size(); i++)
     {
         Box item = this->cases[i];
@@ -300,7 +300,6 @@ void Window::Main()
 
         if (pos.x == this->cursor.x && pos.y == this->cursor.y)
         {
-            selected = true;
             if (this->mouseActive)
             {
                 int b[100][4];
