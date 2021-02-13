@@ -155,6 +155,46 @@ Rgba Box::getPixel(int index)
     return color;
 }
 
+void Box::operator=(Box other)
+{
+    this->setType(other.getType());
+    this->setCoord(other.getCoord());
+    int box[100][4];
+    other.getBox(&box);
+    this->setBox(box);
+}
+
+bool Box::operator==(Box other)
+{
+    if (this->getType() != other.getType())
+    {
+        return false;
+    }
+    if (this->getCoord().x != other.getCoord().x || this->getCoord().y != other.getCoord().y)
+    {
+        return false;
+    }
+
+    for (int i = 0; i < this->getBoxBounds().w * this->getBoxBounds().h; i++)
+    {
+        Rgba t = this->getPixel(i);
+        Rgba o = other.getPixel(i);
+        if (t.a != o.a || t.b != o.b || t.g != o.g || t.r != o.r)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool Box::operator!=(Box other)
+{
+    if ((*this) == other)
+    {
+        return false;
+    }
+    return true;
+}
 struct Size Box::getBoxBounds()
 {
     return {this->width, this->height};

@@ -311,6 +311,106 @@ void Window::Keyup(SDL_Keycode code)
 {
 }
 
+void Window::FixCaseAround(std::string type, Direction dir, std::string exept, std::string fix1, std::string fix2)
+{
+    std::string d1, d2;
+    int x = this->cursor.x;
+    int y = this->cursor.y;
+    int max = this->cases.size();
+    int index = this->cases.size();
+    Action action = Action(this->cases);
+    std::vector<std::pair<int, std::string>> ListFix = {};
+
+    if (dir == UP_DOWN)
+    {
+        d1 = action.getItem(x, y - this->BOX_SIZE).getType();
+        index = action.getItemIndex(x, y - this->BOX_SIZE);
+        if (d1 != "null" && d1 == exept && index < max)
+        {
+            std::pair<int, std::string> it = {index, fix1};
+            ListFix.push_back(it);
+        }
+
+        d2 = action.getItem(x, y + this->BOX_SIZE).getType();
+        index = action.getItemIndex(x, y + this->BOX_SIZE);
+        if (d2 != "null" && d2 == exept && index < max)
+        {
+            std::pair<int, std::string> it = {index, fix2};
+            ListFix.push_back(it);
+        }
+    }
+    else
+    {
+        d1 = action.getItem(x - this->BOX_SIZE, y).getType();
+        index = action.getItemIndex(x - this->BOX_SIZE, y);
+
+        if (d1 != "null" && d1 == exept && index < max)
+        {
+            std::pair<int, std::string> it = {index, fix1};
+            ListFix.push_back(it);
+        }
+        d2 = action.getItem(x + this->BOX_SIZE, y).getType();
+        index = action.getItemIndex(x + this->BOX_SIZE, y);
+
+        if (d2 != "null" && d2 == exept && index < max)
+        {
+            std::pair<int, std::string> it = {index, fix2};
+            ListFix.push_back(it);
+        }
+    }
+
+    for (std::pair<int, std::string> item : ListFix)
+    {
+        int box[100][4];
+        this->getTexture(item.second, &box);
+        this->cases[item.first].setBox(box);
+        this->DrawCase(this->cases[item.first]);
+    }
+    this->prensent();
+}
+
+void Window::GameAction()
+{
+    int y = this->cursor.y;
+    int x = this->cursor.x;
+    Action action = Action(this->cases);
+    std::string type = action.getItem(x, y).getType();
+
+    if (type == "road-grass-ud")
+    {
+        this->FixCaseAround("road-grass-ud", UP_DOWN, "road-grass-lr", "road-grass-ur", "road-grass-dr");
+        // std::string up = action.getItem(x, y - this->BOX_SIZE).getType();
+        // std::string down = action.getItem(x, y + this->BOX_SIZE).getType();
+        // if (up != "null")
+        // {
+        //     int index = action.getItemIndex(x, y - this->BOX_SIZE);
+        //     if (up == "road-grass-lr" && index < this->cases.size())
+        //     {
+        //         int box[100][4];
+        //         this->getTexture("road-grass-ur", &box);
+        //         this->cases[index].setBox(box);
+        //         this->DrawCase(this->cases[index]);
+        //         this->prensent();
+        //     }
+        // }
+        // if (down != "null")
+        // {
+        //     int index = action.getItemIndex(x, y - this->BOX_SIZE);
+        //     if (up == "road-grass-lr" && index < this->cases.size())
+        //     {
+        //         int box[100][4];
+        //         this->getTexture("road-grass-dr", &box);
+        //         this->cases[index].setBox(box);
+        //         this->DrawCase(this->cases[index]);
+        //         this->prensent();
+        //     }
+        // }
+    }
+    else if (type == "road-grass-lr")
+    {
+    }
+}
+
 void Window::Main()
 {
     std::vector<Box> temp = {};
@@ -353,6 +453,8 @@ void Window::Main()
     {
         this->cases.push_back(it);
     }
+    this->GameAction();
+
     this->prensent();
 }
 

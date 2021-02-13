@@ -14,6 +14,11 @@ struct Cursor
     int x, y;
 };
 
+enum Direction{
+    UP_DOWN,
+    LEFT_RIGHT
+};
+
 class Window
 {
 public:
@@ -23,6 +28,7 @@ public:
     void Init();
     void Main();
     void Loop();
+    void GameAction();
 
     void Mouse_Down(int, int);
     void Mouse_Move(int, int);
@@ -46,6 +52,8 @@ public:
     void UserAction();
     void UserButton(int[100][4], std::pair<int, int>, std::string id);
 
+    void FixCaseAround(std::string type,Direction,std::string exept,std::string fix1,std::string fix2);
+
 private:
     SDL_Renderer *render;
     SDL_Window *window;
@@ -60,11 +68,15 @@ private:
     std::vector<std::string> TextureLoadList =
         {
             "grass",
+            "road-grass-dl",
+            "road-grass-dr",
+            "road-grass-ul",
+            "road-grass-ur",
             "road-grass-lr",
             "road-grass-ud",
+            "road-grass-multi",
             "block",
-            "water"
-        };
+            "water"};
 
     std::string activeElement;
     std::string import;

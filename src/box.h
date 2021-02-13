@@ -38,6 +38,9 @@ public:
     struct Size getBoxBounds();
     struct Coord getCoord();
     void setCoord(Coord c);
+    void operator=(Box);
+    bool operator==(Box);
+    bool operator!=(Box);
 
 private:
     std::string type;
