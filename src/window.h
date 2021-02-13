@@ -76,7 +76,8 @@ private:
             "road-grass-ud",
             "road-grass-multi",
             "block",
-            "water"};
+            "water"
+        };
 
     std::string activeElement;
     std::string import;
