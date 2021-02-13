@@ -37,7 +37,7 @@ Window::Window(std::string name, int width, int height, std::string import)
 
 void Window::Init()
 {
-    this->activeElement = "grass";
+    this->activeElement = "water";
     this->LoadRessources();
 
     if (this->import != "")
@@ -56,7 +56,11 @@ void Window::Init()
         {
             for (int x = 0; x < this->w / this->BOX_SIZE; x++)
             {
-                Box b = Box(BLOCK, x * this->BOX_SIZE, y * this->BOX_SIZE);
+                Box b = Box(this->activeElement, x * this->BOX_SIZE, y * this->BOX_SIZE);
+                int box[100][4];
+                this->getTexture(this->activeElement,&box);
+                b.setBox(box);
+                b.setType(this->activeElement);
                 this->cases.push_back(b);
             }
         }
@@ -243,6 +247,17 @@ void Window::Keydown(SDL_Keycode code)
 
     if (code == SDLK_p)
     {
+        int last = 0;
+        int i=0;
+        for(Box b : this->cases)
+        {
+            if(b.isSelected())
+            {
+                b.deselectBox();
+                last=i;
+            }
+            i++;
+        }
         Map p = Map(this->cases);
         p.exportMap("MyCity");
     }
@@ -306,6 +321,7 @@ void Window::Main()
                 this->getTexture(this->activeElement, &b);
                 item.deselectBox();
                 item.setBox(b);
+                item.setType(this->activeElement);
             }
 
             if (!item.isSelected())

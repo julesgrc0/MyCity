@@ -20,7 +20,7 @@ public:
 
 private:
     std::vector<Box> cases;
-    void CreateFile(std::string,std::string);
+    void CreateFile(std::string, std::string);
     bool CreateFolder(std::string);
 };
 

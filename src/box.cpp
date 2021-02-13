@@ -2,13 +2,14 @@
 #include <SDL2/SDL.h>
 #include "box.h"
 
-Box::Box(enum BoxTypes type, int x, int y)
+Box::Box(std::string typeName, int x, int y)
 {
-    this->type = type;
+    this->type = typeName;
     this->x = x;
     this->y = y;
     for (int i = 0; i < this->width * this->height; i++)
     {
+        /*
         this->backUp[i][3] = 59;
         this->colors[i][3] = 59;
 
@@ -20,15 +21,22 @@ Box::Box(enum BoxTypes type, int x, int y)
 
         this->backUp[i][0] = 255;
         this->colors[i][0] = 255;
+        */
+
+        for (int j = 0; j < 4; j++)
+        {
+            this->backUp[i][j] = 0;
+            this->colors[i][j] = 0;
+        }
     }
 }
 
-void Box::setType(enum BoxTypes type)
+void Box::setType(std::string typeName)
 {
-    this->type = type;
+    this->type = typeName;
 }
 
-enum BoxTypes Box::getType()
+std::string Box::getType()
 {
     return this->type;
 }
@@ -59,6 +67,12 @@ void Box::setBox(int box[100][4])
             this->colors[i][j] = box[i][j];
         }
     }
+}
+
+void Box::setCoord(Coord c)
+{
+    this->x = c.x;
+    this->y = c.y;
 }
 
 struct Coord Box::getCoord()

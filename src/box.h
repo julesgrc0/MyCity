@@ -18,27 +18,15 @@ struct Coord
     int x, y;
 };
 
-enum BoxTypes
-{
-    WATER,
-    ROAD_WATER,
-    ROAD,
-    GRASS,
-    BUILD,
-    HOUSE,
-    BRIDGE,
-    BLOCK
-};
-
 class Box
 {
 public:
-    Box(enum BoxTypes type, int x, int y);
+    Box(std::string typeName, int x, int y);
     void setPixel(int index, struct Rgba color);
     Rgba getPixel(int index);
 
-    void setType(enum BoxTypes type);
-    enum BoxTypes getType();
+    void setType(std::string typeName);
+    std::string getType();
 
     bool isSelected();
     void selectBox();
@@ -49,9 +37,11 @@ public:
 
     struct Size getBoxBounds();
     struct Coord getCoord();
+    void setCoord(Coord c);
+    
 
 private:
-    BoxTypes type;
+    std::string type;
     int colors[100][4];
     int backUp[100][4];
     int x, y;

@@ -60,8 +60,12 @@ private:
         {
             "grass",
             "road-grass",
+            "road-grass-lr",
+            "road-grass-ud",
             "road-water",
-            "block"};
+            "block",
+            "water"
+        };
 
     std::string activeElement;
     std::string import;

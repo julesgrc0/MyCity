@@ -74,17 +74,23 @@ std::vector<Box> Map::importMap(std::string name)
     for (std::string file : fileList)
     {
 
-        std::ifstream it(name+"/"+file+".box");
+        std::ifstream it(name + "/" + file + ".box");
 
         if (it.is_open())
         {
             int box[100][4];
             for (int i = 0; i < 100; i++)
             {
+                /*
                 box[i][2] = 83;
                 box[i][3] = 59;
                 box[i][1] = 237;
                 box[i][0] = 255;
+                */
+                for (int j = 0; j < 4; j++)
+                {
+                    box[i][j] = 0;
+                }
             }
 
             std::string line = "";
@@ -123,7 +129,7 @@ std::vector<Box> Map::importMap(std::string name)
                 x = std::atoi(coord[0].c_str());
                 y = std::atoi(coord[1].c_str());
             }
-            Box b = Box(BLOCK, x, y);
+            Box b = Box("", x, y);
             b.setBox(box);
             this->cases.push_back(b);
             it.close();
