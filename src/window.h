@@ -54,6 +54,7 @@ private:
     const int BUTTON_SIZE = 16;
 
     std::vector<Box> cases;
+    std::vector<Box> around;
     std::vector<std::pair<std::pair<int, int>, std::string>> buttons;
     std::vector<std::pair<std::string, int **>> textures;
     std::vector<std::string> TextureLoadList =

@@ -38,7 +38,6 @@ public:
     struct Size getBoxBounds();
     struct Coord getCoord();
     void setCoord(Coord c);
-    
 
 private:
     std::string type;

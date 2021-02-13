@@ -7,6 +7,7 @@
 #include "box.h"
 #include "window.h"
 #include "map.h"
+#include "action.h"
 
 Window::Window(std::string name, int width, int height, std::string import)
 {
@@ -352,7 +353,6 @@ void Window::Main()
     {
         this->cases.push_back(it);
     }
-
     this->prensent();
 }
 
