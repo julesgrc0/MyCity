@@ -311,7 +311,7 @@ void Window::Keyup(SDL_Keycode code)
 {
 }
 
-void Window::FixCaseAround(std::string type, Direction dir, std::string exept, std::string fix1, std::string fix2)
+void Window::FixCases(std::string type, Direction dir, std::vector<CaseFix> fixs)
 {
     std::string d1, d2;
     int x = this->cursor.x;
@@ -321,41 +321,45 @@ void Window::FixCaseAround(std::string type, Direction dir, std::string exept, s
     Action action = Action(this->cases);
     std::vector<std::pair<int, std::string>> ListFix = {};
 
-    if (dir == UP_DOWN)
+    for (CaseFix fix : fixs)
     {
-        d1 = action.getItem(x, y - this->BOX_SIZE).getType();
-        index = action.getItemIndex(x, y - this->BOX_SIZE);
-        if (d1 != "null" && d1 == exept && index < max)
+        if (dir == UP_DOWN || dir == BOTH)
         {
-            std::pair<int, std::string> it = {index, fix1};
-            ListFix.push_back(it);
+            d1 = action.getItem(x, y - this->BOX_SIZE).getType();
+            index = action.getItemIndex(x, y - this->BOX_SIZE);
+            if (d1 != "null" && d1 == fix.exept && index < max)
+            {
+                std::pair<int, std::string> it = {index, fix.fix1};
+                ListFix.push_back(it);
+            }
+
+            d2 = action.getItem(x, y + this->BOX_SIZE).getType();
+            index = action.getItemIndex(x, y + this->BOX_SIZE);
+            if (d2 != "null" && d2 == fix.exept && index < max)
+            {
+                std::pair<int, std::string> it = {index, fix.fix2};
+                ListFix.push_back(it);
+            }
         }
 
-        d2 = action.getItem(x, y + this->BOX_SIZE).getType();
-        index = action.getItemIndex(x, y + this->BOX_SIZE);
-        if (d2 != "null" && d2 == exept && index < max)
+        if (dir == LEFT_RIGHT || dir == BOTH)
         {
-            std::pair<int, std::string> it = {index, fix2};
-            ListFix.push_back(it);
-        }
-    }
-    else
-    {
-        d1 = action.getItem(x - this->BOX_SIZE, y).getType();
-        index = action.getItemIndex(x - this->BOX_SIZE, y);
+            d1 = action.getItem(x - this->BOX_SIZE, y).getType();
+            index = action.getItemIndex(x - this->BOX_SIZE, y);
 
-        if (d1 != "null" && d1 == exept && index < max)
-        {
-            std::pair<int, std::string> it = {index, fix1};
-            ListFix.push_back(it);
-        }
-        d2 = action.getItem(x + this->BOX_SIZE, y).getType();
-        index = action.getItemIndex(x + this->BOX_SIZE, y);
+            if (d1 != "null" && d1 == fix.exept && index < max)
+            {
+                std::pair<int, std::string> it = {index, fix.fix1};
+                ListFix.push_back(it);
+            }
+            d2 = action.getItem(x + this->BOX_SIZE, y).getType();
+            index = action.getItemIndex(x + this->BOX_SIZE, y);
 
-        if (d2 != "null" && d2 == exept && index < max)
-        {
-            std::pair<int, std::string> it = {index, fix2};
-            ListFix.push_back(it);
+            if (d2 != "null" && d2 == fix.exept && index < max)
+            {
+                std::pair<int, std::string> it = {index, fix.fix2};
+                ListFix.push_back(it);
+            }
         }
     }
 
@@ -369,42 +373,20 @@ void Window::FixCaseAround(std::string type, Direction dir, std::string exept, s
     this->prensent();
 }
 
-void Window::GameAction()
+void Window::GameAction(int x, int y)
 {
-    int y = this->cursor.y;
-    int x = this->cursor.x;
     Action action = Action(this->cases);
     std::string type = action.getItem(x, y).getType();
 
     if (type == "road-grass-ud")
     {
-        this->FixCaseAround("road-grass-ud", UP_DOWN, "road-grass-lr", "road-grass-ur", "road-grass-dr");
-        // std::string up = action.getItem(x, y - this->BOX_SIZE).getType();
-        // std::string down = action.getItem(x, y + this->BOX_SIZE).getType();
-        // if (up != "null")
-        // {
-        //     int index = action.getItemIndex(x, y - this->BOX_SIZE);
-        //     if (up == "road-grass-lr" && index < this->cases.size())
-        //     {
-        //         int box[100][4];
-        //         this->getTexture("road-grass-ur", &box);
-        //         this->cases[index].setBox(box);
-        //         this->DrawCase(this->cases[index]);
-        //         this->prensent();
-        //     }
-        // }
-        // if (down != "null")
-        // {
-        //     int index = action.getItemIndex(x, y - this->BOX_SIZE);
-        //     if (up == "road-grass-lr" && index < this->cases.size())
-        //     {
-        //         int box[100][4];
-        //         this->getTexture("road-grass-dr", &box);
-        //         this->cases[index].setBox(box);
-        //         this->DrawCase(this->cases[index]);
-        //         this->prensent();
-        //     }
-        // }
+        std::vector<CaseFix> fix =
+            {
+                {"road-grass-lr", "road-grass-ur", "road-grass-dr"},
+                {"road-grass-dl", "road-grass-multi", "road-grass-multi"},
+                {"road-grass-dr", "road-grass-multi", "road-grass-multi"},
+            };
+        this->FixCases("road-grass-ud", UP_DOWN, fix);
     }
     else if (type == "road-grass-lr")
     {
@@ -453,7 +435,7 @@ void Window::Main()
     {
         this->cases.push_back(it);
     }
-    this->GameAction();
+    this->GameAction(this->cursor.x, this->cursor.y);
 
     this->prensent();
 }
@@ -555,28 +537,3 @@ Window::~Window()
     SDL_Quit();
     exit(0);
 }
-
-/*
-
- void on(std::string, void (*)(Window, std::string));
-    void emit(std::string, std::string);
-    std::vector<std::pair<std::string, void (*)(Window, std::string)>> events;
-
-void Window::on(std::string name, void (*callback)(Window, std::string))
-{
-    std::pair<std::string, void (*)(Window, std::string)> event = {name, callback};
-    this->events.push_back(event);
-}
-
-void Window::emit(std::string name, std::string data)
-{
-    for (std::pair<std::string, void (*)(Window, std::string)> event : this->events)
-    {
-        if (event.first == name)
-        {
-            (*event.second)(*this, data);
-        }
-    }
-}
-
-*/

@@ -16,7 +16,14 @@ struct Cursor
 
 enum Direction{
     UP_DOWN,
-    LEFT_RIGHT
+    LEFT_RIGHT,
+    BOTH
+};
+
+struct CaseFix{
+    std::string exept;
+    std::string fix1;
+    std::string fix2;
 };
 
 class Window
@@ -28,7 +35,7 @@ public:
     void Init();
     void Main();
     void Loop();
-    void GameAction();
+    void GameAction(int,int);
 
     void Mouse_Down(int, int);
     void Mouse_Move(int, int);
@@ -52,7 +59,7 @@ public:
     void UserAction();
     void UserButton(int[100][4], std::pair<int, int>, std::string id);
 
-    void FixCaseAround(std::string type,Direction,std::string exept,std::string fix1,std::string fix2);
+    void FixCases(std::string,Direction,std::vector<CaseFix>);
 
 private:
     SDL_Renderer *render;
