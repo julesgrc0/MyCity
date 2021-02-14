@@ -12,14 +12,17 @@ class Action
 public:
     Action(std::vector<Box>);
     ~Action();
+    
     std::vector<Box> getAround(int);
-    std::vector<Box> getAround(int,int,int);
-    Box getItem(int,int);
-    void removeItem(Box);
-    void setItem(Box,int,int);
-    void matrixAround(std::string,int(*)[9]);
+    std::vector<Box> getAround(int, int, int);
+
+    Box getItem(int, int);
     int getItemIndex(Box);
-    int getItemIndex(int,int);
+    int getItemIndex(int, int);
+    void removeItem(Box);
+    void setItem(Box, int, int);
+
+    void matrixAround(std::string, int (*)[9]);
 
 private:
     bool isInDist(int, int, int);

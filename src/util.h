@@ -1,4 +1,5 @@
 #pragma once
+
 #ifndef _UTIL_
 #define _UTIL_
 

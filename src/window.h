@@ -14,16 +14,23 @@ struct Cursor
     int x, y;
 };
 
-enum Direction{
+enum Direction
+{
     UP_DOWN,
     LEFT_RIGHT,
     BOTH
 };
 
-struct CaseFix{
+struct CaseFix
+{
     std::string exept;
     std::string fix1;
     std::string fix2;
+};
+
+struct Pos
+{
+    int x, y;
 };
 
 class Window
@@ -35,7 +42,7 @@ public:
     void Init();
     void Main();
     void Loop();
-    void GameAction(int,int);
+    void GameAction(int, int);
 
     void Mouse_Down(int, int);
     void Mouse_Move(int, int);
@@ -59,7 +66,7 @@ public:
     void UserAction();
     void UserButton(int[100][4], std::pair<int, int>, std::string id);
 
-    void FixCases(std::string,Direction,std::vector<CaseFix>);
+    void FixCases(Pos, Direction, std::vector<CaseFix>);
 
 private:
     SDL_Renderer *render;
@@ -83,8 +90,7 @@ private:
             "road-grass-ud",
             "road-grass-multi",
             "block",
-            "water"
-        };
+            "water"};
 
     std::string activeElement;
     std::string import;

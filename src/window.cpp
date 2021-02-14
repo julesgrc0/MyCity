@@ -254,14 +254,12 @@ void Window::Keydown(SDL_Keycode code)
 
     if (code == SDLK_p)
     {
-        int last = 0;
         int i = 0;
         for (Box b : this->cases)
         {
             if (b.isSelected())
             {
                 b.deselectBox();
-                last = i;
             }
             i++;
         }
@@ -311,11 +309,11 @@ void Window::Keyup(SDL_Keycode code)
 {
 }
 
-void Window::FixCases(std::string type, Direction dir, std::vector<CaseFix> fixs)
+void Window::FixCases(Pos p, Direction dir, std::vector<CaseFix> fixs)
 {
     std::string d1, d2;
-    int x = this->cursor.x;
-    int y = this->cursor.y;
+    int x = p.x;
+    int y = p.y;
     int max = this->cases.size();
     int index = this->cases.size();
     Action action = Action(this->cases);
@@ -386,10 +384,18 @@ void Window::GameAction(int x, int y)
                 {"road-grass-dl", "road-grass-multi", "road-grass-multi"},
                 {"road-grass-dr", "road-grass-multi", "road-grass-multi"},
             };
-        this->FixCases("road-grass-ud", UP_DOWN, fix);
+        this->FixCases({x, y}, UP_DOWN, fix);
     }
     else if (type == "road-grass-lr")
     {
+        std::vector<CaseFix> fix =
+            {
+                {"road-grass-ud", "road-grass-multi", "road-grass-multi"},
+                {"road-grass-dr", "road-grass-multi", "road-grass-multi"},
+                {"road-grass-ul", "road-grass-multi", "road-grass-multi"},
+                {"road-grass-ur", "road-grass-multi", "road-grass-multi"},
+            };
+        this->FixCases({x, y}, LEFT_RIGHT, fix);
     }
 }
 
