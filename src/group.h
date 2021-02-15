@@ -4,30 +4,38 @@
 #define _GROUP_
 
 #include <iostream>
-#include<vector>
+#include <vector>
 #include "box.h"
 
-
-struct GroupeItem{
-    int box[100][4];
+struct GroupItem
+{
+    int (*box)[100][4];
     int x, y;
 };
 
 class BoxGroup
 {
 public:
-    BoxGroup(std::string);
+    BoxGroup(std::string,int);
     ~BoxGroup();
 
-    void setBox(int,int,GroupeItem);
-    GroupeItem getBox(int,int);
+    void createGroup(std::vector<std::string>,int);
 
-    void setGroup(GroupeItem);
-    GroupeItem getGroup();
+    void setItemGroup(int, int, GroupItem);
+    GroupItem getItemGroup(int, int);
+
+    void setGroup(std::vector<GroupItem>);
+    std::vector<GroupItem> getGroup();
+
+    std::string getType();
+    void setType(std::string);
 
     bool isSelected();
-    void selectGroup();
-    void deselectGroup();
+    void selectGroups();
+    void deselectGroups();
+
+    int getSize();
+    bool setSize(int);
 
     void operator=(BoxGroup);
     bool operator==(BoxGroup);
@@ -35,7 +43,9 @@ public:
 
 private:
     std::string type;
-    std::vector<GroupeItem> group;
+    std::vector<GroupItem> group;
+    bool selected = false;
+    int size;
 };
 
 #endif // !_GROUP_
