@@ -18,7 +18,11 @@ enum Direction
 {
     UP_DOWN,
     LEFT_RIGHT,
-    BOTH
+    BOTH,
+    LEFT,
+    TOP,
+    BOTTOM,
+    RIGHT
 };
 
 struct CaseFix
@@ -67,6 +71,7 @@ public:
     void UserButton(int[100][4], std::pair<int, int>, std::string id);
 
     void FixCases(Pos, Direction, std::vector<CaseFix>);
+    void ChangeBox(Pos,std::string);
 
 private:
     SDL_Renderer *render;

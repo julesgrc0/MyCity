@@ -321,42 +321,55 @@ void Window::FixCases(Pos p, Direction dir, std::vector<CaseFix> fixs)
 
     for (CaseFix fix : fixs)
     {
-        if (dir == UP_DOWN || dir == BOTH)
+        if (dir == UP_DOWN || dir == BOTH || dir == TOP || dir == BOTTOM)
         {
-            d1 = action.getItem(x, y - this->BOX_SIZE).getType();
-            index = action.getItemIndex(x, y - this->BOX_SIZE);
-            if (d1 != "null" && d1 == fix.exept && index < max)
+            if (dir == TOP || dir == UP_DOWN || dir == BOTH)
             {
-                std::pair<int, std::string> it = {index, fix.fix1};
-                ListFix.push_back(it);
+                d1 = action.getItem(x, y - this->BOX_SIZE).getType();
+                index = action.getItemIndex(x, y - this->BOX_SIZE);
+                if (d1 != "null" && d1 == fix.exept && index < max)
+                {
+                    std::pair<int, std::string> it = {index, fix.fix1};
+                    ListFix.push_back(it);
+                }
             }
 
-            d2 = action.getItem(x, y + this->BOX_SIZE).getType();
-            index = action.getItemIndex(x, y + this->BOX_SIZE);
-            if (d2 != "null" && d2 == fix.exept && index < max)
+            if (dir == BOTTOM || dir == UP_DOWN || dir == BOTH)
             {
-                std::pair<int, std::string> it = {index, fix.fix2};
-                ListFix.push_back(it);
+                d2 = action.getItem(x, y + this->BOX_SIZE).getType();
+                index = action.getItemIndex(x, y + this->BOX_SIZE);
+                if (d2 != "null" && d2 == fix.exept && index < max)
+                {
+                    std::pair<int, std::string> it = {index, fix.fix2};
+                    ListFix.push_back(it);
+                }
             }
         }
 
-        if (dir == LEFT_RIGHT || dir == BOTH)
+        if (dir == LEFT_RIGHT || dir == BOTH || dir == LEFT || dir == RIGHT)
         {
-            d1 = action.getItem(x - this->BOX_SIZE, y).getType();
-            index = action.getItemIndex(x - this->BOX_SIZE, y);
-
-            if (d1 != "null" && d1 == fix.exept && index < max)
+            if (dir == LEFT || dir == LEFT_RIGHT || dir == BOTH)
             {
-                std::pair<int, std::string> it = {index, fix.fix1};
-                ListFix.push_back(it);
+                d1 = action.getItem(x - this->BOX_SIZE, y).getType();
+                index = action.getItemIndex(x - this->BOX_SIZE, y);
+
+                if (d1 != "null" && d1 == fix.exept && index < max)
+                {
+                    std::pair<int, std::string> it = {index, fix.fix1};
+                    ListFix.push_back(it);
+                }
             }
-            d2 = action.getItem(x + this->BOX_SIZE, y).getType();
-            index = action.getItemIndex(x + this->BOX_SIZE, y);
 
-            if (d2 != "null" && d2 == fix.exept && index < max)
+            if (dir == RIGHT || dir == LEFT_RIGHT || dir == BOTH)
             {
-                std::pair<int, std::string> it = {index, fix.fix2};
-                ListFix.push_back(it);
+                d2 = action.getItem(x + this->BOX_SIZE, y).getType();
+                index = action.getItemIndex(x + this->BOX_SIZE, y);
+
+                if (d2 != "null" && d2 == fix.exept && index < max)
+                {
+                    std::pair<int, std::string> it = {index, fix.fix2};
+                    ListFix.push_back(it);
+                }
             }
         }
     }
@@ -366,9 +379,21 @@ void Window::FixCases(Pos p, Direction dir, std::vector<CaseFix> fixs)
         int box[100][4];
         this->getTexture(item.second, &box);
         this->cases[item.first].setBox(box);
+        this->cases[item.first].setType(item.second);
         this->DrawCase(this->cases[item.first]);
     }
     this->prensent();
+}
+
+void Window::ChangeBox(Pos p, std::string text)
+{
+    int box[100][4];
+    this->getTexture(text, &box);
+    Action action = Action(this->cases);
+    int i = action.getItemIndex(p.x, p.y);
+    this->cases[i].setBox(box);
+    this->cases[i].setType(text);
+    this->DrawCase(this->cases[i]);
 }
 
 void Window::GameAction(int x, int y)
