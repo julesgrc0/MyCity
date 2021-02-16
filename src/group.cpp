@@ -4,7 +4,7 @@
 #include "box.h"
 #include "texture.h"
 
-BoxGroup::BoxGroup(std::string type,int size)
+BoxGroup::BoxGroup(std::string type, int size)
 {
     this->type = type;
     this->size = size;
@@ -20,6 +20,11 @@ void BoxGroup::deselectGroups()
     if (this->selected)
     {
         this->selected = false;
+        this->group.clear();
+        for(GroupItem it : this->backUp)
+        {
+            this->group.push_back(it);
+        }
     }
 }
 
@@ -28,6 +33,93 @@ void BoxGroup::selectGroups()
     if (!this->selected)
     {
         this->selected = true;
+        this->backUp.clear();
+        for (GroupItem it : this->group)
+        {
+            this->backUp.push_back(it);
+        }
+
+        int width = this->size;
+        int height = this->group.size() / width;
+
+        for (int i = 0; i < width; i++)
+        {
+            int pos[4] = {i, i * width, ((width * height) - width) + i, i * width + (height - 1)};
+            for (int j = 0; j < 4; j++)
+            {
+                int box[100][4];
+                for (int bi = 0; bi < 100; bi++)
+                {
+                    for (int bj = 0; bj < 4; bj++)
+                    {
+                        box[bi][bj] = (*this->group[pos[j]].box)[bi][bj];
+                    }
+                }
+
+                switch (j)
+                {
+                case 0:
+                    this->setBoxBorder(&box, true, false, false, true);
+                    break;
+                case 1:
+                    this->setBoxBorder(&box, false, true, false, true);
+                    break;
+                case 2:
+                    this->setBoxBorder(&box, false, false, true, true);
+                    break;
+                case 3:
+                    this->setBoxBorder(&box, false, false, false, true);
+                    break;
+                }
+
+                GroupItem item = {&box, this->group[pos[j]].x, this->group[pos[j]].y};
+                this->group[pos[j]] = item;
+            }
+        }
+    }
+}
+
+void BoxGroup::setBoxBorder(int (*box)[100][4], bool top, bool right, bool bottom, bool left)
+{
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            int c = 255;
+            switch (j)
+            {
+            case 1:
+                c = 247;
+                break;
+            case 2:
+                c = 20;
+                break;
+            case 3:
+                c = 236;
+                break;
+            }
+            if (top)
+            {
+                (*box)[i][j] = c;
+            }
+
+            if (bottom)
+            {
+                int bottomB = ((10 * 10) - 10) + i;
+                (*box)[bottomB][j] = c;
+            }
+
+            if (left)
+            {
+                int leftB = i * 10;
+                (*box)[leftB][j] = c;
+            }
+            if (right)
+            {
+                int rightB = i * 10 + (10 - 1);
+                (*box)[rightB][j] = c;
+            }
+        }
     }
 }
 
@@ -111,7 +203,7 @@ void BoxGroup::createGroup(std::vector<std::string> list, int size)
     this->size = size;
 
     this->group.clear();
-    for(GroupItem it : items)
+    for (GroupItem it : items)
     {
         this->group.push_back(it);
     }
@@ -125,7 +217,7 @@ int BoxGroup::getSize()
 bool BoxGroup::setSize(int size)
 {
     int gsize = (int)this->group.size();
-    if(!gsize)
+    if (!gsize)
     {
         return false;
     }
@@ -133,7 +225,7 @@ bool BoxGroup::setSize(int size)
     int j = 0;
     std::vector<GroupItem> items = {};
 
-    for(GroupItem it : this->group)
+    for (GroupItem it : this->group)
     {
         if (i == size)
         {
@@ -145,7 +237,7 @@ bool BoxGroup::setSize(int size)
     }
 
     this->group.clear();
-    for(GroupItem it : items)
+    for (GroupItem it : items)
     {
         this->group.push_back(it);
     }
@@ -209,4 +301,5 @@ bool BoxGroup::operator!=(BoxGroup other)
 BoxGroup::~BoxGroup()
 {
     this->group.clear();
+    this->backUp.clear();
 }

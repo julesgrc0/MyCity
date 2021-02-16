@@ -44,8 +44,10 @@ public:
 private:
     std::string type;
     std::vector<GroupItem> group;
+    std::vector<GroupItem> backUp;
     bool selected = false;
     int size;
+    void setBoxBorder(int(*)[100][4],bool,bool,bool,bool);
 };
 
 #endif // !_GROUP_
