@@ -274,23 +274,10 @@ void Window::Mouse_Down(int x, int y)
 
             if (btn.first <= x && btn.first + this->BUTTON_SIZE >= x && btn.second <= y && btn.second + this->BUTTON_SIZE >= y)
             {
-                if (it.second.rfind(this->GroupSufix, 0) == 0)
+
+                if (this->activeElement != it.second)
                 {
-                    for (GroupItem item : this->GroupeLoadList)
-                    {
-                        if (this->GroupSufix + item.id == it.second)
-                        {
-                            this->DrawGroup(item);
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    if (this->activeElement != it.second)
-                    {
-                        this->activeElement = it.second;
-                    }
+                    this->activeElement = it.second;
                 }
             }
         }
@@ -343,9 +330,23 @@ void Window::Keydown(SDL_Keycode code)
     }
     else if (code == SDLK_SPACE)
     {
-        this->Mouse_Down(x, y);
-        this->Mouse_Up(x, y);
-        this->Main();
+        if (this->activeElement.rfind(this->GroupSufix, 0) == 0)
+        {
+            for (GroupItem item : this->GroupeLoadList)
+            {
+                if (this->GroupSufix + item.id == this->activeElement)
+                {
+                    this->DrawGroup(item);
+                    break;
+                }
+            }
+        }
+        else
+        {
+            this->Mouse_Down(x, y);
+            this->Mouse_Up(x, y);
+            this->Main();
+        }
     }
     else
     {
@@ -510,7 +511,7 @@ void Window::Main()
 
         if (pos.x == this->cursor.x && pos.y == this->cursor.y)
         {
-            if (this->mouseActive && item.getType() != this->activeElement)
+            if (this->mouseActive && item.getType() != this->activeElement && this->activeElement.rfind(this->GroupSufix, 0) != 0)
             {
                 int b[100][4];
                 this->getTexture(this->activeElement, &b);
@@ -541,6 +542,7 @@ void Window::Main()
     {
         this->cases.push_back(it);
     }
+
     this->GameAction(this->cursor.x, this->cursor.y);
 
     this->prensent();
@@ -661,6 +663,7 @@ void Window::DrawGroup(GroupItem item)
 
         this->DrawCase(b);
     }
+
     this->Main();
 }
 
