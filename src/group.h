@@ -9,17 +9,29 @@
 
 struct GroupItem
 {
-    int (*box)[100][4];
+    int (*box)[4];
     int x, y;
+    void operator=(GroupItem other)
+    {
+        this->x = other.x;
+        this->y = other.y;
+        for (int i = 0; i < 100; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                this->box[i][j] = other.box[i][j];
+            }
+        }
+    }
 };
 
 class BoxGroup
 {
 public:
-    BoxGroup(std::string,int);
+    BoxGroup(std::string, int);
     ~BoxGroup();
 
-    void createGroup(std::vector<std::string>,int);
+    void createGroup(std::vector<std::string>, int);
 
     void setItemGroup(int, int, GroupItem);
     GroupItem getItemGroup(int, int);
@@ -47,7 +59,7 @@ private:
     std::vector<GroupItem> backUp;
     bool selected = false;
     int size;
-    void setBoxBorder(int(*)[100][4],bool,bool,bool,bool);
+    void setBoxBorder(int (*)[100][4], bool, bool, bool, bool);
 };
 
 #endif // !_GROUP_

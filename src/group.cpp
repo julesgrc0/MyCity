@@ -21,7 +21,7 @@ void BoxGroup::deselectGroups()
     {
         this->selected = false;
         this->group.clear();
-        for(GroupItem it : this->backUp)
+        for (GroupItem it : this->backUp)
         {
             this->group.push_back(it);
         }
@@ -52,7 +52,7 @@ void BoxGroup::selectGroups()
                 {
                     for (int bj = 0; bj < 4; bj++)
                     {
-                        box[bi][bj] = (*this->group[pos[j]].box)[bi][bj];
+                        box[bi][bj] = this->group[pos[j]].box[bi][bj];
                     }
                 }
 
@@ -72,7 +72,7 @@ void BoxGroup::selectGroups()
                     break;
                 }
 
-                GroupItem item = {&box, this->group[pos[j]].x, this->group[pos[j]].y};
+                GroupItem item = {box, this->group[pos[j]].x, this->group[pos[j]].y};
                 this->group[pos[j]] = item;
             }
         }
@@ -150,7 +150,7 @@ void BoxGroup::setGroup(std::vector<GroupItem> group)
 GroupItem BoxGroup::getItemGroup(int x, int y)
 {
     int box[100][4];
-    GroupItem item = {&box, 0, 0};
+    GroupItem item = {box, 0, 0};
 
     for (GroupItem it : group)
     {
@@ -180,25 +180,44 @@ void BoxGroup::setItemGroup(int x, int y, GroupItem item)
 void BoxGroup::createGroup(std::vector<std::string> list, int size)
 {
     Texture texture = Texture();
-    int i = 0;
-    int j = 0;
     std::vector<GroupItem> items = {};
+
+    int x = 0;
+    int y = 0;
 
     for (std::string it : list)
     {
-        if (i == size)
+        x++;
+        int box[100][4];
+        if (texture.LoadTexture(it))
         {
-            int box[100][4];
-            if (texture.LoadTexture(it))
+            texture.getTexture(&box);
+            int **a = new int *[100];
+            for (int i = 0; i < 100; ++i)
             {
-                texture.getTexture(&box);
+                a[i] = new int[4];
+
+                a[i][0] = box[i][3];
+                a[i][1] = box[i][2];
+                a[i][2] = box[i][1];
+                a[i][3] = box[i][0];
             }
-            GroupItem Gitem = {&box, i, j};
-            items.push_back(Gitem);
-            j++;
-            i = 0;
+            
+            for (int i = 0; i < 100; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    box[i][j] = a[i][j];
+                }
+            }
         }
-        i++;
+        GroupItem Gitem = {box, x, y};
+        items.push_back(Gitem);
+        if (x == size)
+        {
+            x = 0;
+            y++;
+        }
     }
     this->size = size;
 

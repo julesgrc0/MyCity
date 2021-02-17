@@ -8,6 +8,8 @@
 #include "window.h"
 #include "map.h"
 #include "action.h"
+#include "group.h"
+
 
 Window::Window(std::string name, int width, int height, std::string import)
 {
@@ -303,6 +305,62 @@ void Window::Keydown(SDL_Keycode code)
             this->Main();
         }
     }
+
+    /* TEST SECTION */
+    if (code == SDLK_g)
+    {
+        BoxGroup group = BoxGroup("test", 0);
+        std::vector<std::string> HomeGroupTextures =
+            {
+                "./assets/resources/home/g1.box",
+                "./assets/resources/home/g2.box",
+                "./assets/resources/home/g3.box",
+                "./assets/resources/home/g4.box",
+            };
+
+        group.createGroup(HomeGroupTextures, 2);
+        std::vector<GroupItem> g = group.getGroup();
+
+        for (int i = 0; i < g.size(); i++)
+        {
+            int posX = x + (g[i].x * this->BOX_SIZE) - this->BOX_SIZE;
+            int posY = y + (g[i].y * this->BOX_SIZE);
+
+            int bx[100][4];
+
+            Box b = Box("group", posX, posY);
+            b.setBox(g[i].box);
+
+            int id;
+            std::vector<Box> temp = {};
+            for (id = 0; id < this->cases.size(); id++)
+            {
+                Coord pos = this->cases[id].getCoord();
+                if (pos.x == posX && pos.y == posY)
+                {
+                    if (this->cases[id].isSelected())
+                    {
+                        b.selectBox();
+                    }
+                    temp.push_back(b);
+                }
+                else
+                {
+                    temp.push_back(this->cases[id]);
+                }
+            }
+            this->cases.clear();
+            for(Box item : temp)
+            {
+                this->cases.push_back(item);
+            }
+
+            this->DrawCase(b);
+        }
+        this->Main();
+    }
+    /* TEST SECTION */
+
 }
 
 void Window::Keyup(SDL_Keycode code)
@@ -544,10 +602,10 @@ void Window::color(int r, int g, int b, int a)
 
 void Window::DrawCase(Box item)
 {
-    Coord pos = item.getCoord();
     int box[100][4];
     item.getBox(&box);
 
+    Coord pos = item.getCoord();
     int c = 0;
     for (int i = 0; i < 10; i++)
     {

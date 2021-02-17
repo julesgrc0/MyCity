@@ -32,6 +32,7 @@ public:
     void selectBox();
     void deselectBox();
 
+    void getNoSelected(int (*box)[100][4]);
     void getBox(int (*box)[100][4]);
     void setBox(int box[100][4]);
 

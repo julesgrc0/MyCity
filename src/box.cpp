@@ -57,6 +57,17 @@ void Box::getBox(int (*box)[100][4])
     }
 }
 
+void Box::getNoSelected(int (*box)[100][4])
+{
+    for (int i = 0; i < this->width * this->height; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            (*box)[i][j] = this->backUp[i][j];
+        }
+    }
+}
+
 void Box::setBox(int box[100][4])
 {
     for (int i = 0; i < this->width * this->height; i++)
@@ -155,17 +166,28 @@ Rgba Box::getPixel(int index)
     return color;
 }
 
+
+
 void Box::operator=(Box other)
 {
     this->setType(other.getType());
     this->setCoord(other.getCoord());
     int box[100][4];
-    other.getBox(&box);
+    other.getNoSelected(&box);
     this->setBox(box);
+    if(other.isSelected())
+    {
+        this->selectBox();
+    }
 }
 
 bool Box::operator==(Box other)
 {
+    if(this->isSelected() != other.isSelected())
+    {
+        return false;
+    }
+
     if (this->getType() != other.getType())
     {
         return false;
