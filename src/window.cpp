@@ -114,6 +114,15 @@ void Window::UserAction()
         this->getTexture(text, &btn);
         this->UserButton(btn, pos, text);
     }
+
+    for (GroupItem item : this->GroupeLoadList)
+    {
+        x += this->BUTTON_SIZE * 2;
+        pos = {x, y + 10};
+
+        this->getTexture(this->GroupSufix + item.id, &btn);
+        this->UserButton(btn, pos, "group-" + item.id);
+    }
 }
 
 void Window::UserButton(int texture[100][4], std::pair<int, int> pos, std::string id)
@@ -159,6 +168,27 @@ void Window::LoadRessources()
     {
         this->RegisterTexture(id);
     }
+    for (GroupItem it : this->GroupeLoadList)
+    {
+        this->RegisterGroupTexture(it.id, it.list);
+    }
+}
+
+std::vector<int **> Window::getGroupTexture(std::string id)
+{
+    std::vector<int **> list = {};
+    for (std::pair<std::string, std::vector<int **>> item : this->GroupeTextures)
+    {
+        if (this->GroupSufix + item.first == id)
+        {
+            for (int **it : item.second)
+            {
+                list.push_back(it);
+            }
+            break;
+        }
+    }
+    return list;
 }
 
 void Window::getTexture(std::string id, int (*b)[100][4])
@@ -176,6 +206,36 @@ void Window::getTexture(std::string id, int (*b)[100][4])
             }
         }
     }
+}
+
+void Window::RegisterGroupTexture(std::string id, std::vector<std::string> texture)
+{
+    Texture loader = Texture();
+    std::vector<int **> list = {};
+
+    this->RegisterTexture(this->GroupSufix + id);
+
+    for (std::string item : texture)
+    {
+        if (loader.LoadTexture("./assets/resources/" + item + ".box"))
+        {
+            int b[100][4];
+            loader.getTexture(&b);
+            int **a = new int *[100];
+            for (int i = 0; i < 100; ++i)
+            {
+                a[i] = new int[4];
+
+                a[i][0] = b[i][3];
+                a[i][1] = b[i][2];
+                a[i][2] = b[i][1];
+                a[i][3] = b[i][0];
+            }
+            list.push_back(a);
+        }
+    }
+    std::pair<std::string, std::vector<int **>> res = {id, list};
+    this->GroupeTextures.push_back(res);
 }
 
 void Window::RegisterTexture(std::string id)
@@ -214,9 +274,23 @@ void Window::Mouse_Down(int x, int y)
 
             if (btn.first <= x && btn.first + this->BUTTON_SIZE >= x && btn.second <= y && btn.second + this->BUTTON_SIZE >= y)
             {
-                if (this->activeElement != it.second)
+                if (it.second.rfind(this->GroupSufix, 0) == 0)
                 {
-                    this->activeElement = it.second;
+                    for (GroupItem item : this->GroupeLoadList)
+                    {
+                        if (this->GroupSufix + item.id == it.second)
+                        {
+                            this->DrawGroup(item);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    if (this->activeElement != it.second)
+                    {
+                        this->activeElement = it.second;
+                    }
                 }
             }
         }
@@ -304,59 +378,6 @@ void Window::Keydown(SDL_Keycode code)
             this->Main();
         }
     }
-
-    /* TEST SECTION */
-    if (code == SDLK_g)
-    {
-        BoxGroup group = BoxGroup("test", 0);
-        std::vector<std::string> HomeGroupTextures =
-            {
-                "./assets/resources/home/g1.box",
-                "./assets/resources/home/g2.box",
-                "./assets/resources/home/g3.box",
-                "./assets/resources/home/g4.box",
-            };
-
-        group.createGroup(HomeGroupTextures, 2);
-        std::vector<Box> g = group.getGroup();
-
-        for (int i = 0; i < g.size(); i++)
-        {
-            int posX = x + (g[i].getCoord().x * this->BOX_SIZE) - this->BOX_SIZE;
-            int posY = y + (g[i].getCoord().y * this->BOX_SIZE);
-
-            int id;
-            Box b = g[i];
-
-            std::vector<Box> temp = {};
-            for (id = 0; id < this->cases.size(); id++)
-            {
-                Coord pos = this->cases[id].getCoord();
-                if (pos.x == posX && pos.y == posY)
-                {
-                    b.setCoord({posX, posY});
-                    if (this->cases[id].isSelected())
-                    {
-                        b.selectBox();
-                    }
-                    temp.push_back(b);
-                }
-                else
-                {
-                    temp.push_back(this->cases[id]);
-                }
-            }
-            this->cases.clear();
-            for (Box item : temp)
-            {
-                this->cases.push_back(item);
-            }
-
-            this->DrawCase(b);
-        }
-        this->Main();
-    }
-    /* TEST SECTION */
 }
 
 void Window::Keyup(SDL_Keycode code)
@@ -594,6 +615,53 @@ void Window::prensent()
 void Window::color(int r, int g, int b, int a)
 {
     SDL_SetRenderDrawColor(this->render, r, g, b, a);
+}
+
+void Window::DrawGroup(GroupItem item)
+{
+    int x = this->cursor.x;
+    int y = this->cursor.y;
+
+    BoxGroup group = BoxGroup(item.id, item.width);
+    group.setGroup(this->getGroupTexture(this->GroupSufix + item.id));
+    std::vector<Box> g = group.getGroup();
+
+    for (int i = 0; i < (int)g.size(); i++)
+    {
+        int posX = x + (g[i].getCoord().x * this->BOX_SIZE) - this->BOX_SIZE;
+        int posY = y + (g[i].getCoord().y * this->BOX_SIZE);
+
+        int id;
+        Box b = g[i];
+
+        std::vector<Box> temp = {};
+        for (id = 0; id < (int)this->cases.size(); id++)
+        {
+            Coord pos = this->cases[id].getCoord();
+            if (pos.x == posX && pos.y == posY)
+            {
+                b.setCoord({posX, posY});
+                if (this->cases[id].isSelected())
+                {
+                    b.selectBox();
+                }
+                temp.push_back(b);
+            }
+            else
+            {
+                temp.push_back(this->cases[id]);
+            }
+        }
+
+        this->cases.clear();
+        for (Box item : temp)
+        {
+            this->cases.push_back(item);
+        }
+
+        this->DrawCase(b);
+    }
+    this->Main();
 }
 
 void Window::DrawCase(Box item)

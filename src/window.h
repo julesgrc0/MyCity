@@ -37,6 +37,13 @@ struct Pos
     int x, y;
 };
 
+struct GroupItem
+{
+    std::string id;
+    std::vector<std::string> list;
+    int width;
+};
+
 class Window
 {
 public:
@@ -63,15 +70,20 @@ public:
 
     void SetPixel(int x, int y, int r, int g, int b, int a);
     void DrawCase(Box item);
+    void DrawGroup(GroupItem item);
+
+    void RegisterGroupTexture(std::string, std::vector<std::string>);
     void RegisterTexture(std::string id);
+
     void getTexture(std::string id, int (*b)[100][4]);
+    std::vector<int **> getGroupTexture(std::string);
 
     void LoadRessources();
     void UserAction();
     void UserButton(int[100][4], std::pair<int, int>, std::string id);
 
     void FixCases(Pos, Direction, std::vector<CaseFix>);
-    void ChangeBox(Pos,std::string);
+    void ChangeBox(Pos, std::string);
 
 private:
     SDL_Renderer *render;
@@ -79,11 +91,14 @@ private:
 
     const int BOX_SIZE = 10;
     const int BUTTON_SIZE = 16;
+    const std::string GroupSufix = "group-";
 
     std::vector<Box> cases;
     std::vector<Box> around;
     std::vector<std::pair<std::pair<int, int>, std::string>> buttons;
     std::vector<std::pair<std::string, int **>> textures;
+    std::vector<std::pair<std::string, std::vector<int **>>> GroupeTextures;
+
     std::vector<std::string> TextureLoadList =
         {
             "grass",
@@ -95,7 +110,20 @@ private:
             "road-grass-ud",
             "road-grass-multi",
             "block",
-            "water"};
+            "water",
+    };
+
+    std::vector<GroupItem> GroupeLoadList = {
+        {"home",
+         {
+             "home/g1",
+             "home/g2",
+             "home/g3",
+             "home/g4",
+         },
+         2
+         },
+    };
 
     std::string activeElement;
     std::string import;

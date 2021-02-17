@@ -74,7 +74,7 @@ void BoxGroup::selectGroups()
                     break;
                 }
 
-                Box item = Box(this->type,this->group[pos[j]].getCoord().x, this->group[pos[j]].getCoord().y);
+                Box item = Box(this->type, this->group[pos[j]].getCoord().x, this->group[pos[j]].getCoord().y);
                 item.setBox(box);
                 this->group[pos[j]] = item;
             }
@@ -141,6 +141,34 @@ std::vector<Box> BoxGroup::getGroup()
     return this->group;
 }
 
+void BoxGroup::setGroup(std::vector<int **> g)
+{
+    this->group.clear();
+    int i = 0;
+    int j = 0;
+
+    for (int **it : g)
+    {
+        i++;
+        int box[100][4];
+        for (int i = 0; i < 100; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                box[i][j] = it[i][j];
+            }
+        }
+        Box b = Box(this->type, i, j);
+        b.setBox(box);
+        this->group.push_back(b);
+        if (i == this->size)
+        {
+            i = 0;
+            j++;
+        }
+    }
+}
+
 void BoxGroup::setGroup(std::vector<Box> group)
 {
     this->group.clear();
@@ -152,7 +180,7 @@ void BoxGroup::setGroup(std::vector<Box> group)
 
 Box BoxGroup::getItemGroup(int x, int y)
 {
-    Box item = Box(this->type,0,0);
+    Box item = Box(this->type, 0, 0);
 
     for (Box it : group)
     {
@@ -204,7 +232,7 @@ void BoxGroup::createGroup(std::vector<std::string> list, int size)
                 a[i][2] = box[i][1];
                 a[i][3] = box[i][0];
             }
-            
+
             for (int i = 0; i < 100; i++)
             {
                 for (int j = 0; j < 4; j++)
@@ -213,7 +241,7 @@ void BoxGroup::createGroup(std::vector<std::string> list, int size)
                 }
             }
         }
-        Box Gitem = Box(this->type,x,y);
+        Box Gitem = Box(this->type, x, y);
         Gitem.setBox(box);
         items.push_back(Gitem);
         if (x == size)

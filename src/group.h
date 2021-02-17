@@ -19,6 +19,7 @@ public:
     Box getItemGroup(int, int);
 
     void setGroup(std::vector<Box>);
+    void setGroup(std::vector<int**>);
     std::vector<Box> getGroup();
 
     std::string getType();
