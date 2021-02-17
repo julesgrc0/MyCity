@@ -10,7 +10,6 @@
 #include "action.h"
 #include "group.h"
 
-
 Window::Window(std::string name, int width, int height, std::string import)
 {
     this->import = import;
@@ -319,25 +318,23 @@ void Window::Keydown(SDL_Keycode code)
             };
 
         group.createGroup(HomeGroupTextures, 2);
-        std::vector<GroupItem> g = group.getGroup();
+        std::vector<Box> g = group.getGroup();
 
         for (int i = 0; i < g.size(); i++)
         {
-            int posX = x + (g[i].x * this->BOX_SIZE) - this->BOX_SIZE;
-            int posY = y + (g[i].y * this->BOX_SIZE);
-
-            int bx[100][4];
-
-            Box b = Box("group", posX, posY);
-            b.setBox(g[i].box);
+            int posX = x + (g[i].getCoord().x * this->BOX_SIZE) - this->BOX_SIZE;
+            int posY = y + (g[i].getCoord().y * this->BOX_SIZE);
 
             int id;
+            Box b = g[i];
+
             std::vector<Box> temp = {};
             for (id = 0; id < this->cases.size(); id++)
             {
                 Coord pos = this->cases[id].getCoord();
                 if (pos.x == posX && pos.y == posY)
                 {
+                    b.setCoord({posX, posY});
                     if (this->cases[id].isSelected())
                     {
                         b.selectBox();
@@ -350,7 +347,7 @@ void Window::Keydown(SDL_Keycode code)
                 }
             }
             this->cases.clear();
-            for(Box item : temp)
+            for (Box item : temp)
             {
                 this->cases.push_back(item);
             }
@@ -360,7 +357,6 @@ void Window::Keydown(SDL_Keycode code)
         this->Main();
     }
     /* TEST SECTION */
-
 }
 
 void Window::Keyup(SDL_Keycode code)

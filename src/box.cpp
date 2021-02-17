@@ -166,8 +166,6 @@ Rgba Box::getPixel(int index)
     return color;
 }
 
-
-
 void Box::operator=(Box other)
 {
     this->setType(other.getType());
@@ -175,7 +173,7 @@ void Box::operator=(Box other)
     int box[100][4];
     other.getNoSelected(&box);
     this->setBox(box);
-    if(other.isSelected())
+    if (other.isSelected())
     {
         this->selectBox();
     }
@@ -183,7 +181,7 @@ void Box::operator=(Box other)
 
 bool Box::operator==(Box other)
 {
-    if(this->isSelected() != other.isSelected())
+    if (this->isSelected() != other.isSelected())
     {
         return false;
     }

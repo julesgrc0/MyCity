@@ -7,24 +7,6 @@
 #include <vector>
 #include "box.h"
 
-struct GroupItem
-{
-    int (*box)[4];
-    int x, y;
-    void operator=(GroupItem other)
-    {
-        this->x = other.x;
-        this->y = other.y;
-        for (int i = 0; i < 100; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                this->box[i][j] = other.box[i][j];
-            }
-        }
-    }
-};
-
 class BoxGroup
 {
 public:
@@ -33,11 +15,11 @@ public:
 
     void createGroup(std::vector<std::string>, int);
 
-    void setItemGroup(int, int, GroupItem);
-    GroupItem getItemGroup(int, int);
+    void setItemGroup(int, int, Box);
+    Box getItemGroup(int, int);
 
-    void setGroup(std::vector<GroupItem>);
-    std::vector<GroupItem> getGroup();
+    void setGroup(std::vector<Box>);
+    std::vector<Box> getGroup();
 
     std::string getType();
     void setType(std::string);
@@ -55,8 +37,8 @@ public:
 
 private:
     std::string type;
-    std::vector<GroupItem> group;
-    std::vector<GroupItem> backUp;
+    std::vector<Box> group;
+    std::vector<Box> backUp;
     bool selected = false;
     int size;
     void setBoxBorder(int (*)[100][4], bool, bool, bool, bool);

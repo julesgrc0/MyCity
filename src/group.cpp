@@ -21,7 +21,7 @@ void BoxGroup::deselectGroups()
     {
         this->selected = false;
         this->group.clear();
-        for (GroupItem it : this->backUp)
+        for (Box it : this->backUp)
         {
             this->group.push_back(it);
         }
@@ -34,7 +34,7 @@ void BoxGroup::selectGroups()
     {
         this->selected = true;
         this->backUp.clear();
-        for (GroupItem it : this->group)
+        for (Box it : this->group)
         {
             this->backUp.push_back(it);
         }
@@ -52,7 +52,9 @@ void BoxGroup::selectGroups()
                 {
                     for (int bj = 0; bj < 4; bj++)
                     {
-                        box[bi][bj] = this->group[pos[j]].box[bi][bj];
+                        int Gbox[100][4];
+                        this->group[pos[j]].getBox(&Gbox);
+                        box[bi][bj] = Gbox[bi][bj];
                     }
                 }
 
@@ -72,7 +74,8 @@ void BoxGroup::selectGroups()
                     break;
                 }
 
-                GroupItem item = {box, this->group[pos[j]].x, this->group[pos[j]].y};
+                Box item = Box(this->type,this->group[pos[j]].getCoord().x, this->group[pos[j]].getCoord().y);
+                item.setBox(box);
                 this->group[pos[j]] = item;
             }
         }
@@ -133,42 +136,41 @@ void BoxGroup::setType(std::string type)
     this->type = type;
 }
 
-std::vector<GroupItem> BoxGroup::getGroup()
+std::vector<Box> BoxGroup::getGroup()
 {
     return this->group;
 }
 
-void BoxGroup::setGroup(std::vector<GroupItem> group)
+void BoxGroup::setGroup(std::vector<Box> group)
 {
     this->group.clear();
-    for (GroupItem it : group)
+    for (Box it : group)
     {
         this->group.push_back(it);
     }
 }
 
-GroupItem BoxGroup::getItemGroup(int x, int y)
+Box BoxGroup::getItemGroup(int x, int y)
 {
-    int box[100][4];
-    GroupItem item = {box, 0, 0};
+    Box item = Box(this->type,0,0);
 
-    for (GroupItem it : group)
+    for (Box it : group)
     {
-        if (it.x == x && it.y == y)
+        if (it.getCoord().x == x && it.getCoord().y == y)
         {
-            return item;
+            return it;
         }
     }
 
     return item;
 }
 
-void BoxGroup::setItemGroup(int x, int y, GroupItem item)
+void BoxGroup::setItemGroup(int x, int y, Box item)
 {
     int i = 0;
-    for (GroupItem it : this->group)
+    for (Box it : this->group)
     {
-        if (it.x == x && it.y == y)
+        if (it.getCoord().x == x && it.getCoord().y == y)
         {
             this->group[i] = item;
             break;
@@ -180,7 +182,7 @@ void BoxGroup::setItemGroup(int x, int y, GroupItem item)
 void BoxGroup::createGroup(std::vector<std::string> list, int size)
 {
     Texture texture = Texture();
-    std::vector<GroupItem> items = {};
+    std::vector<Box> items = {};
 
     int x = 0;
     int y = 0;
@@ -211,7 +213,8 @@ void BoxGroup::createGroup(std::vector<std::string> list, int size)
                 }
             }
         }
-        GroupItem Gitem = {box, x, y};
+        Box Gitem = Box(this->type,x,y);
+        Gitem.setBox(box);
         items.push_back(Gitem);
         if (x == size)
         {
@@ -222,7 +225,7 @@ void BoxGroup::createGroup(std::vector<std::string> list, int size)
     this->size = size;
 
     this->group.clear();
-    for (GroupItem it : items)
+    for (Box it : items)
     {
         this->group.push_back(it);
     }
@@ -242,9 +245,9 @@ bool BoxGroup::setSize(int size)
     }
     int i = 0;
     int j = 0;
-    std::vector<GroupItem> items = {};
+    std::vector<Box> items = {};
 
-    for (GroupItem it : this->group)
+    for (Box it : this->group)
     {
         if (i == size)
         {
@@ -256,7 +259,7 @@ bool BoxGroup::setSize(int size)
     }
 
     this->group.clear();
-    for (GroupItem it : items)
+    for (Box it : items)
     {
         this->group.push_back(it);
     }
@@ -294,11 +297,11 @@ bool BoxGroup::operator==(BoxGroup other)
         return false;
     }
 
-    for (GroupItem it : this->group)
+    for (Box it : this->group)
     {
-        for (GroupItem ot : other.getGroup())
+        for (Box ot : other.getGroup())
         {
-            if (it.x != ot.x || it.y != ot.y || it.box != ot.box)
+            if (it != ot)
             {
                 return false;
             }
