@@ -114,15 +114,16 @@ private:
     };
 
     std::vector<GroupItem> GroupeLoadList = {
-        {"home",
-         {
+        {   
+            "home",
+            {
              "home/g1",
              "home/g2",
              "home/g3",
              "home/g4",
-         },
-         2
-         },
+            },
+            2
+        }
     };
 
     std::string activeElement;

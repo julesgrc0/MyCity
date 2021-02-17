@@ -146,7 +146,7 @@ void BoxGroup::setGroup(std::vector<int **> g)
     this->group.clear();
     int i = 0;
     int j = 0;
-
+    
     for (int **it : g)
     {
         i++;

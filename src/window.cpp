@@ -213,7 +213,8 @@ void Window::RegisterGroupTexture(std::string id, std::vector<std::string> textu
     Texture loader = Texture();
     std::vector<int **> list = {};
 
-    this->RegisterTexture(this->GroupSufix + id);
+    this->RegisterTexture(id);
+    this->textures[this->textures.size()-1].first = this->GroupSufix + id;
 
     for (std::string item : texture)
     {
