@@ -141,13 +141,30 @@ void Window::UserButton(int texture[100][4], std::pair<int, int> pos, std::strin
     {
         std::pair<std::pair<int, int>, std::string> btnReg = {pos, id};
         this->buttons.push_back(btnReg);
-        this->color(214, 214, 214, SDL_ALPHA_OPAQUE);
+
+        if (id.rfind(this->GroupSufix, 0) == 0)
+        {
+            this->color(138, 145, 145, SDL_ALPHA_OPAQUE);
+        }
+        else
+        {
+            this->color(214, 214, 214, SDL_ALPHA_OPAQUE);
+        }
+
         for (int i = pos.second; i < pos.second + this->BUTTON_SIZE; i++)
         {
             SDL_RenderDrawLine(this->render, pos.first, i, pos.first + this->BUTTON_SIZE - 1, i);
         }
 
-        this->color(107, 107, 107, SDL_ALPHA_OPAQUE);
+        if (id.rfind(this->GroupSufix, 0) == 0)
+        {
+            this->color(48, 48, 48, SDL_ALPHA_OPAQUE);
+        }
+        else
+        {
+            this->color(107, 107, 107, SDL_ALPHA_OPAQUE);
+        }
+
         SDL_Rect rect = {pos.first, pos.second, this->BUTTON_SIZE, this->BUTTON_SIZE};
         SDL_RenderDrawRect(this->render, &rect);
         int c = 0;
@@ -214,7 +231,7 @@ void Window::RegisterGroupTexture(std::string id, std::vector<std::string> textu
     std::vector<int **> list = {};
 
     this->RegisterTexture(id);
-    this->textures[this->textures.size()-1].first = this->GroupSufix + id;
+    this->textures[this->textures.size() - 1].first = this->GroupSufix + id;
 
     for (std::string item : texture)
     {
